@@ -4,10 +4,9 @@ import java.util.Scanner;
 
 public class otomatSistemi {
 
-    static String password = "yeniYuzyil";
+    static String password = "1234";
     static String[] urunler = new String[40]; //Otomata koyulabilecek maksimum urun sayisi 40'tir.
-    static int[] fiyat = new int[40];
-    static int[] stok = new int[40];
+    static int[][] fiyatStok = new int[40][2];
     static int urunSayisi = 0;
     static Scanner input = new Scanner(System.in);
 
@@ -18,6 +17,7 @@ public class otomatSistemi {
             System.out.println("1 - Siparis");
             System.out.println("2 - Admin Paneli");
             System.out.println("3 - Programi bitir");
+            System.out.print("Islem seciniz: ");
             int giris = input.nextInt();
             input.nextLine();
             if (giris == 1) {
@@ -49,8 +49,8 @@ public class otomatSistemi {
                 System.out.println("Gecerli bir sayi giriniz!");
                 continue;
             } else {
-                if (stok[numara-1] > 0) {
-                    stok[numara-1]--;
+                if (fiyatStok[numara - 1][1] > 0) {
+                    fiyatStok[numara - 1][1]--;
                     break;
                 } else {
                     System.out.println("Sectiginiz urunun stogu kalmamistir.");
@@ -60,6 +60,7 @@ public class otomatSistemi {
             }
         }
         while (true) {
+            int deneme = 0;
             int ucret = fiyatBul(numara);
 
             if (ucret == -1) {
@@ -76,8 +77,25 @@ public class otomatSistemi {
                     paraUstu = odeme - ucret;
                     if (paraUstu >= 0) {
                         System.out.println("Siparis basarili! Para ustu : " + paraUstu);
-                        System.out.println("Basa donuluyor...");
-                        break;
+                        while (true) {
+                            System.out.println("Tekrar siparis olusturmak ister misiniz?");
+                            System.out.println("0 - Bitir");
+                            System.out.println("1 - Devam");
+                            int devam = input.nextInt();
+                            if (devam == 1) {
+                                kullanici();
+                            } else if (devam == 0) {
+                                System.out.println("Basa donuluyor...");
+                                return;
+                            } else {
+                                System.out.println("Yanlis Tuslama!");
+                                deneme++;
+                                if (deneme >= 3) {
+                                    System.out.println("Ardarda yanlis tuslama, Basa donuluyor...");
+                                    return;
+                                }
+                            }
+                        }
                     } else {
                         paraUstu = ucret - odeme;
                         System.out.println("Bakiye Yetersiz! " + paraUstu + " TL daha gerek.");
@@ -90,34 +108,34 @@ public class otomatSistemi {
     static void varsayilanList() {
         urunSayisi = 0;
         urunler[0] = "Su";
-        fiyat[0] = 10;
-        stok[0] = 10;
+        fiyatStok[0][0] = 10;
+        fiyatStok[0][1] = 8;
         urunSayisi++;
         urunler[1] = "Kraker";
-        fiyat[1] = 15;
-        stok[1] = 5;
+        fiyatStok[1][0] = 15;
+        fiyatStok[1][1] = 5;
         urunSayisi++;
         urunler[2] = "Cikolata";
-        fiyat[2] = 20;
-        stok[2] = 5;
+        fiyatStok[2][0] = 20;
+        fiyatStok[2][1] = 5;
         urunSayisi++;
         urunler[3] = "Soda";
-        fiyat[3] = 20;
-        stok[3] = 5;
+        fiyatStok[3][0] = 20;
+        fiyatStok[3][1] = 5;
         urunSayisi++;
         urunler[4] = "Kek";
-        fiyat[4] = 18;
-        stok[4] = 5;
+        fiyatStok[4][0] = 18;
+        fiyatStok[4][1] = 5;
         urunSayisi++;
         urunler[5] = "Biskuvi";
-        fiyat[5] = 25;
-        stok[5] = 5;
+        fiyatStok[5][0] = 25;
+        fiyatStok[5][1] = 5;
         urunSayisi++;
     }
 
     static void yiyecekList() {
         for (int i = 0; i < urunSayisi; i++) {
-            System.out.println((i + 1) + " - " + urunler[i] + "  \t" + fiyat[i] + " TL" + "\tSTOK = " + stok[i]);
+            System.out.println((i + 1) + " - " + urunler[i] + "  \t" + fiyatStok[i][0] + " TL" + "\tSTOK = " + fiyatStok[i][1]);
         }
 
     }
@@ -126,7 +144,7 @@ public class otomatSistemi {
         if (x > urunSayisi || x <= 0) {
             return -1;
         } else {
-            return fiyat[x - 1];
+            return fiyatStok[x - 1][0];
         }
 
     }
@@ -177,7 +195,8 @@ public class otomatSistemi {
             System.out.println("0 - Cikis");
             System.out.println("1 - Urun ekle");
             System.out.println("2 - Urun ve Fiyat Duzenle");
-            System.out.println("3 - Sifreyi Degistir");
+            System.out.println("3 - Urun kaldir");
+            System.out.println("4 - Sifreyi Degistir");
             System.out.print("Yapacaginiz islemi seciniz: ");
             secim = input.nextInt();
             input.nextLine();
@@ -191,6 +210,9 @@ public class otomatSistemi {
                     urunDuzenle();
                     break;
                 case 3:
+                    urunKaldir();
+                    break;
+                case 4:
                     sifreSifirlama();
                     break;
                 default:
@@ -217,16 +239,14 @@ public class otomatSistemi {
             }
             System.out.print("Urun stogu girin: ");
             int urunStok = input.nextInt();
-            if (urunStok == 0) {
-                return;
-            } else if (urunStok < 0) {
+            if (urunStok < 0) {
                 System.out.println("Gecerli bir stok giriniz.");
                 continue;
             }
             if (urunSayisi < 40) {
                 urunler[urunSayisi] = urunIsmi;
-                fiyat[urunSayisi] = urunFiyat;
-                stok[urunSayisi] = urunStok;
+                fiyatStok[urunSayisi][0] = urunFiyat;
+                fiyatStok[urunSayisi][1] = urunStok;
                 urunSayisi++;
                 System.out.println("Urun ekleme basarili!");
                 return;
@@ -248,7 +268,10 @@ public class otomatSistemi {
                 System.out.println("Urun bulunamadi! Lutfen tekrar deneyiniz.");
                 continue;
             } else {
-                System.out.println("1 - Urunu degistir \n2 - Urun Fiyati degistir\n3 - Urun Stogu guncelle \nYapilacak islemi seciniz.");
+                System.out.println("1 - Urunu degistir");
+                System.out.println("2 - Urun Fiyati degistir");
+                System.out.println("3 - Urun Stogu guncelle");
+                System.out.println("Yapilacak islemi seciniz.");
                 int secim = input.nextInt();
                 input.nextLine();
                 if (secim == 0) {
@@ -271,7 +294,7 @@ public class otomatSistemi {
                     if (yeniFiyat == 0) {
                         return;
                     } else {
-                        fiyat[urunSecim - 1] = yeniFiyat;
+                        fiyatStok[urunSecim - 1][0] = yeniFiyat;
                         System.out.println("Islem Basarili!");
                     }
                 } else {
@@ -280,9 +303,55 @@ public class otomatSistemi {
                     if (yeniStok == 0) {
                         return;
                     } else {
-                        stok[urunSecim - 1] = yeniStok;
+                        fiyatStok[urunSecim - 1][1] = yeniStok;
                         System.out.println("Islem Basarili!");
 
+                    }
+                }
+            }
+        }
+    }
+
+    static void urunKaldir() {
+        int deneme = 0;
+        while (true) {
+            yiyecekList();
+            System.out.print("Kaldirmak istediginiz urunu seciniz: ");
+            int secim = input.nextInt();
+            if (secim == 0) {
+                return;
+            } else if (secim < 0 || secim > urunSayisi) {
+                System.out.println("Lutfen gecerli bir urun seciniz!");
+                continue;
+            } else {
+                while (true) {
+                    System.out.println(urunler[secim - 1] + " adli urunu kaldirmaya emin misiniz?");
+                    System.out.println("0 - Geri Don");
+                    System.out.println("1 - Devam");
+                    int devam2 = input.nextInt();
+                    if (devam2 == 0) {
+                        break;
+                    } else if (devam2 != 1) {
+                        System.out.println("Yanlis Tuslama!");
+                        deneme++;
+                        if (deneme >= 3) {
+                            System.out.println("Ardarda yanlis tuslama, Basa donuluyor...");
+                            return;
+                        }
+                        continue;
+
+                    } else {
+                        for (int i = secim - 1; i < urunSayisi - 1; i++) {
+                            urunler[i] = urunler[i + 1];
+                            fiyatStok[i][0] = fiyatStok[i + 1][0];
+                            fiyatStok[i][1] = fiyatStok[i + 1][1];
+                        }
+                        urunler[urunSayisi - 1] = null;
+                        fiyatStok[urunSayisi - 1][0] = 0;
+                        fiyatStok[urunSayisi - 1][1] = 0;
+                        urunSayisi--;
+                        System.out.println("Islem Basarili!");
+                        break;
                     }
                 }
             }
