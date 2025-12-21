@@ -37,68 +37,81 @@ public class otomatSistemi {
     }
 
     static void kullanici() {
-        double paraUstu;
-        int numara = 0;
-        System.out.println("Lutfen alacaginiz urunun numarasini yaziniz. Geri donmek icin 0'i tuslayiniz.");
         while (true) {
-            yiyecekList();
-            numara = input.nextInt();
-            if (numara == 0) {
-                return;
-            } else if (numara > urunSayisi || numara < 0) {
-                System.out.println("Gecerli bir sayi giriniz!");
-                continue;
-            } else {
-                if (fiyatStok[numara - 1][1] > 0) {
-                    fiyatStok[numara - 1][1]--;
+            double paraUstu;
+            int numara = 0;
+            System.out.println("Lutfen alacaginiz urunun numarasini yaziniz. Geri donmek icin 0'i tuslayiniz.");
+            while (true) {
+                yiyecekList();
+                numara = input.nextInt();
+                if (numara == 0) {
+                    return;
+                } else if (numara > urunSayisi || numara < 0) {
+                    System.out.println("Gecerli bir sayi giriniz!");
+                    continue;
+                } else {
+                    if (fiyatStok[numara - 1][1] > 0) {
+                        fiyatStok[numara - 1][1]--;
+                        break;
+                    } else {
+                        System.out.println("Sectiginiz urunun stogu kalmamistir.");
+                        continue;
+                    }
+
+                }
+            }
+            while (true) {
+                int deneme = 0;
+                int ucret = fiyatBul(numara);
+
+                if (ucret == -1) {
+                    System.out.println("Gecersiz sayi, basa donuluyor...");
                     break;
                 } else {
-                    System.out.println("Sectiginiz urunun stogu kalmamistir.");
-                    continue;
-                }
+                    System.out.println("Odeyeceginiz tutari giriniz (" + ucret + " TL)");
+                    double odeme = input.nextDouble();
 
-            }
-        }
-        while (true) {
-            int deneme = 0;
-            int ucret = fiyatBul(numara);
+                    if (odeme < 0) {
+                        System.out.println("Lutfen gecerli bir sayi giriniz.");
+                    } else if (odeme == 0) {
 
-            if (ucret == -1) {
-                System.out.println("Gecersiz sayi, basa donuluyor...");
-                break;
-            } else {
-                System.out.println("Odeyeceginiz tutari giriniz");
-                double odeme = input.nextDouble();
-                if (odeme < 0) {
-                    System.out.println("Lutfen gecerli bir sayi giriniz.");
-                } else if (odeme == 0) {
-                    return;
-                } else {
-                    paraUstu = odeme - ucret;
-                    if (paraUstu >= 0) {
-                        System.out.println("Siparis basarili! Para ustu : " + paraUstu);
-                        while (true) {
-                            System.out.println("Tekrar siparis olusturmak ister misiniz?");
-                            System.out.println("0 - Bitir");
-                            System.out.println("1 - Devam");
-                            int devam = input.nextInt();
-                            if (devam == 1) {
-                                kullanici();
-                            } else if (devam == 0) {
-                                System.out.println("Basa donuluyor...");
-                                return;
-                            } else {
-                                System.out.println("Yanlis Tuslama!");
-                                deneme++;
-                                if (deneme >= 3) {
-                                    System.out.println("Ardarda yanlis tuslama, Basa donuluyor...");
+                        return;
+                    } else {
+                        paraUstu = odeme - ucret;
+                        if (paraUstu >= 0) {
+                            System.out.println("Siparis basarili! Para ustu : " + paraUstu);
+
+                            boolean yeniSiparis = false;
+                            while (true) {
+                                System.out.println("Tekrar siparis olusturmak ister misiniz?");
+                                System.out.println("0 - Bitir");
+                                System.out.println("1 - Devam");
+                                int devam = input.nextInt();
+
+                                if (devam == 1) {
+                                    yeniSiparis = true;
+                                    break;
+                                } else if (devam == 0) {
+                                    System.out.println("Ana menuye donuluyor...");
                                     return;
+                                } else {
+                                    System.out.println("Yanlis Tuslama!");
+                                    deneme++;
+                                    if (deneme >= 3) {
+                                        System.out.println("Ardarda yanlis tuslama, Basa donuluyor...");
+                                        return;
+                                    }
                                 }
                             }
+
+                            if (yeniSiparis) {
+                                break;
+                            }
+
+                        } else {
+                            paraUstu = ucret - odeme;
+                            System.out.println("Bakiye Yetersiz! " + paraUstu + " TL daha gerek.");
                         }
-                    } else {
-                        paraUstu = ucret - odeme;
-                        System.out.println("Bakiye Yetersiz! " + paraUstu + " TL daha gerek.");
                     }
                 }
             }
