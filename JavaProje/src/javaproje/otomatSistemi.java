@@ -51,7 +51,7 @@ public class otomatSistemi {
                     continue;
                 } else {
                     if (fiyatStok[numara - 1][1] > 0) {
-                        fiyatStok[numara - 1][1]--;
+
                         break;
                     } else {
                         System.out.println("Sectiginiz urunun stogu kalmamistir.");
@@ -79,6 +79,7 @@ public class otomatSistemi {
                     } else {
                         paraUstu = odeme - ucret;
                         if (paraUstu >= 0) {
+                            fiyatStok[numara - 1][1]--;
                             System.out.println("Siparis basarili! Para ustu : " + paraUstu);
 
                             boolean yeniSiparis = false;
@@ -244,6 +245,7 @@ public class otomatSistemi {
             }
             System.out.print("Urun Fiyatini girin: ");
             int urunFiyat = input.nextInt();
+            input.nextLine();
             if (urunFiyat == 0) {
                 return;
             } else if (urunFiyat < 0) {
@@ -252,6 +254,7 @@ public class otomatSistemi {
             }
             System.out.print("Urun stogu girin: ");
             int urunStok = input.nextInt();
+            input.nextLine();
             if (urunStok < 0) {
                 System.out.println("Gecerli bir stok giriniz.");
                 continue;
