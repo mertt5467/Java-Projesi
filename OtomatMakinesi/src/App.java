@@ -3,22 +3,20 @@ import java.io.File;
 import java.io.FileWriter;
 
 public class App {
-    static String password = "1234";
+    static String password;
     static String[] urunler = new String[40]; // Otomata koyulabilecek maksimum urun sayisi 40'tir.
     static int[][] fiyatStok = new int[40][2];
     static int urunSayisi = 0;
     static Scanner input = new Scanner(System.in);
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) throws Exception {
         varsayilanList();
         while (true) {
             System.out.println("\n--- ANA MENU ---");
             System.out.println("1 - Siparis");
             System.out.println("2 - Admin Paneli");
             System.out.println("3 - Programi bitir");
-            System.out.print("Islem seciniz: ");
-            int giris = input.nextInt();
-            input.nextLine();
+            int giris = veriOkuInt();
             if (giris == 1) {
                 kullanici();
             } else if (giris == 2) {
@@ -46,7 +44,7 @@ public class App {
             System.out.println("Lutfen alacaginiz urunun numarasini yaziniz. Geri donmek icin 0'i tuslayiniz.");
             while (true) {
                 yiyecekList();
-                numara = input.nextInt();
+                numara = veriOkuInt();
                 if (numara == 0) {
                     return;
                 } else if (numara > urunSayisi || numara < 0) {
@@ -75,7 +73,7 @@ public class App {
                     break;
                 } else {
                     System.out.println("Odeyeceginiz tutari giriniz (" + ucret + " TL)");
-                    double odeme = input.nextDouble();
+                    double odeme = veriOkuDouble();
 
                     if (odeme < 0) {
                         System.out.println("Lutfen gecerli bir sayi giriniz.");
@@ -96,7 +94,7 @@ public class App {
                                 System.out.println("Tekrar siparis olusturmak ister misiniz?");
                                 System.out.println("0 - Bitir");
                                 System.out.println("1 - Devam");
-                                int devam = input.nextInt();
+                                int devam = veriOkuInt();
 
                                 if (devam == 1) {
                                     yeniSiparis = true;
@@ -132,7 +130,7 @@ public class App {
         }
     }
 
-    static void varsayilanList() throws Exception{
+    static void varsayilanList() throws Exception {
         urunSayisi = 0;
         File urunIsmi = new File("data\\urunIsmi.txt");
         Scanner isim = new Scanner(urunIsmi);
@@ -140,15 +138,15 @@ public class App {
         Scanner fiyat = new Scanner(urunFiyat);
         File urunStok = new File("data\\urunStok.txt");
         Scanner stok = new Scanner(urunStok);
-        while(isim.hasNextLine() == true){
+        while (isim.hasNextLine() == true) {
             urunler[urunSayisi] = isim.nextLine();
-            fiyatStok[urunSayisi][0] = fiyat.nextInt(); 
+            fiyatStok[urunSayisi][0] = fiyat.nextInt();
             fiyatStok[urunSayisi][1] = stok.nextInt();
             urunSayisi++;
         }
         File kayitliSifre = new File("data\\sifre.txt");
         Scanner sifre = new Scanner(kayitliSifre);
-        password = sifre.nextLine(); 
+        password = sifre.nextLine();
         isim.close();
         fiyat.close();
         stok.close();
@@ -172,10 +170,10 @@ public class App {
 
     }
 
-    static int adminDogrulama()throws Exception {
+    static int adminDogrulama() throws Exception {
         while (true) {
             System.out.println("Sifreyi giriniz. Sifirlamak icin 1'i, geri donmek icin 0'i tuslayiniz.");
-            String sifre = input.nextLine();
+            String sifre = veriOkuString();
             if (sifre.equals(password)) {
                 System.out.println("Giris Basarili!");
                 Thread.sleep(1000);
@@ -191,15 +189,15 @@ public class App {
         }
     }
 
-    static void sifreSifirlama() throws Exception{
+    static void sifreSifirlama() throws Exception {
         while (true) {
             System.out.println("Yeni sifreyi giriniz. Geri donus icin 0'a basiniz.");
-            String sifre = input.nextLine();
+            String sifre = veriOkuString();
             if (sifre.equals("0")) {
                 return;
             }
             System.out.println("Sifreyi tekrar giriniz. Geri donus icin 0'a basiniz.");
-            String sifre2 = input.nextLine();
+            String sifre2 = veriOkuString();
             if (sifre2.equals("0")) {
                 return;
             } else if (sifre2.equals(sifre)) {
@@ -216,7 +214,7 @@ public class App {
 
     }
 
-    static void adminPanel() throws Exception{
+    static void adminPanel() throws Exception {
         int secim;
         while (true) {
             System.out.println("0 - Cikis");
@@ -224,9 +222,7 @@ public class App {
             System.out.println("2 - Urun ve Fiyat Duzenle");
             System.out.println("3 - Urun kaldir");
             System.out.println("4 - Sifreyi Degistir");
-            System.out.print("Yapacaginiz islemi seciniz: ");
-            secim = input.nextInt();
-            input.nextLine();
+            secim = veriOkuInt();
             switch (secim) {
                 case 0:
                     return;
@@ -249,18 +245,16 @@ public class App {
         }
     }
 
-    static void urunEkleme() throws Exception{
+    static void urunEkleme() throws Exception {
         yiyecekList();
         while (true) {
-            System.out.print("Urun ismini girin: ");
-            String urunIsmi = input.nextLine();
-            input.nextLine();
+            System.out.println("Urun ismini girin ");
+            String urunIsmi = veriOkuString();
             if (urunIsmi.equals("0")) {
                 return;
             }
-            System.out.print("Urun Fiyatini girin: ");
-            int urunFiyat = input.nextInt();
-            input.nextLine();
+            System.out.println("Urun Fiyatini girin ");
+            int urunFiyat = veriOkuInt();
             if (urunFiyat == 0) {
                 return;
             } else if (urunFiyat < 0) {
@@ -268,9 +262,8 @@ public class App {
                 Thread.sleep(1000);
                 continue;
             }
-            System.out.print("Urun stogu girin: ");
-            int urunStok = input.nextInt();
-            input.nextLine();
+            System.out.println("Urun stogu girin ");
+            int urunStok = veriOkuInt();
             if (urunStok < 0) {
                 System.out.println("Gecerli bir stok giriniz.");
                 Thread.sleep(1000);
@@ -293,11 +286,11 @@ public class App {
         }
     }
 
-    static void urunDuzenle() throws Exception{
+    static void urunDuzenle() throws Exception {
         while (true) {
             yiyecekList();
             System.out.println("Islem yapilacak urunu seciniz.");
-            int urunSecim = input.nextInt();
+            int urunSecim = veriOkuInt();
             if (urunSecim == 0) {
                 return;
             } else if (urunSecim > urunSayisi || urunSecim < 0) {
@@ -309,8 +302,7 @@ public class App {
                 System.out.println("2 - Urun Fiyati degistir");
                 System.out.println("3 - Urun Stogu guncelle");
                 System.out.println("Yapilacak islemi seciniz.");
-                int secim = input.nextInt();
-                input.nextLine();
+                int secim = veriOkuInt();
                 if (secim == 0) {
                     return;
                 } else if (secim > 3 || secim < 0) {
@@ -318,8 +310,8 @@ public class App {
                     Thread.sleep(1000);
                     continue;
                 } else if (secim == 1) {
-                    System.out.print("Yeni urunu giriniz: ");
-                    String isim = input.nextLine();
+                    System.out.println("Yeni urunu giriniz ");
+                    String isim = veriOkuString();
                     if (isim.equals("0")) {
                         return;
                     } else {
@@ -329,8 +321,8 @@ public class App {
                         Thread.sleep(1000);
                     }
                 } else if (secim == 2) {
-                    System.out.print("Urun Fiyati giriniz: ");
-                    int yeniFiyat = input.nextInt();
+                    System.out.println("Urun Fiyati giriniz ");
+                    int yeniFiyat = veriOkuInt();
                     if (yeniFiyat == 0) {
                         return;
                     } else {
@@ -340,8 +332,8 @@ public class App {
                         Thread.sleep(1000);
                     }
                 } else {
-                    System.out.print("Urun stok miktarini giriniz: ");
-                    int yeniStok = input.nextInt();
+                    System.out.println("Urun stok miktarini giriniz ");
+                    int yeniStok = veriOkuInt();
                     if (yeniStok == 0) {
                         return;
                     } else {
@@ -355,12 +347,12 @@ public class App {
         }
     }
 
-    static void urunKaldir() throws Exception{
+    static void urunKaldir() throws Exception {
         int deneme = 0;
         while (true) {
             yiyecekList();
-            System.out.print("Kaldirmak istediginiz urunu seciniz: ");
-            int secim = input.nextInt();
+            System.out.println("Kaldirmak istediginiz urunu seciniz ");
+            int secim = veriOkuInt();
             if (secim == 0) {
                 return;
             } else if (secim < 0 || secim > urunSayisi) {
@@ -372,7 +364,7 @@ public class App {
                     System.out.println(urunler[secim - 1] + " adli urunu kaldirmaya emin misiniz?");
                     System.out.println("0 - Geri Don");
                     System.out.println("1 - Devam");
-                    int devam2 = input.nextInt();
+                    int devam2 = veriOkuInt();
                     if (devam2 == 0) {
                         break;
                     } else if (devam2 != 1) {
@@ -405,14 +397,14 @@ public class App {
         }
     }
 
-    static void urunKaydet() throws Exception{
+    static void urunKaydet() throws Exception {
         FileWriter urunIsmi = new FileWriter("data\\urunIsmi.txt");
         FileWriter urunStok = new FileWriter("data\\urunStok.txt");
         FileWriter urunFiyat = new FileWriter("data\\urunFiyat.txt");
-        for(int i = 0; i < urunSayisi; i++){
-            urunIsmi.write(urunler[i]+ "\n"); 
-            urunFiyat.write(fiyatStok[i][0]+"\n");
-            urunStok.write(fiyatStok[i][1]+"\n");
+        for (int i = 0; i < urunSayisi; i++) {
+            urunIsmi.write(urunler[i] + "\n");
+            urunFiyat.write(fiyatStok[i][0] + "\n");
+            urunStok.write(fiyatStok[i][1] + "\n");
         }
         FileWriter sifreKaydet = new FileWriter("data\\sifre.txt");
         sifreKaydet.write(password);
@@ -420,5 +412,46 @@ public class App {
         urunStok.close();
         urunFiyat.close();
         sifreKaydet.close();
+    }
+
+    static int veriOkuInt() {
+        while (true) {
+            try {
+                System.out.print("Giris: ");
+                int x = input.nextInt();
+                input.nextLine();
+                return x;
+            } catch (Exception e) {
+                System.out.println("Yanlis parametre! ");
+                input.nextLine();
+            }
+        }
+    }
+    static double veriOkuDouble()throws Exception {
+        while (true) {
+            try {
+                System.out.print("Giris: ");
+                double x = input.nextDouble();
+                input.nextLine();
+                return x;
+            } catch (Exception e) {
+                Thread.sleep(500);
+                System.out.println("Yanlis parametre! ");
+                input.nextLine();
+            }
+        }
+    }
+    static String veriOkuString()throws Exception {
+        while (true) {
+            try {
+                System.out.print("Giris: ");
+                String x = input.nextLine();
+                return x;
+            } catch (Exception e) {
+                Thread.sleep(500);
+                System.out.println("Yanlis parametre! ");
+                input.nextLine();
+            }
+        }
     }
 }
